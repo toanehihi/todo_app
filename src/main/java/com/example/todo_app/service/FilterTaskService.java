@@ -1,7 +1,7 @@
-package com.example.todo_app.Service;
+package com.example.todo_app.service;
 
-import com.example.todo_app.Common.Status;
-import com.example.todo_app.Entity.Task;
+import com.example.todo_app.common.Status;
+import com.example.todo_app.entity.Task;
 
 import java.util.Map;
 import java.util.List;

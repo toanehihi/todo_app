@@ -1,14 +1,12 @@
-package com.example.todo_app.Entity;
+package com.example.todo_app.entity;
 
-import com.example.todo_app.Common.Priority;
-import com.example.todo_app.Common.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.todo_app.common.Priority;
+import com.example.todo_app.common.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 @Entity
 @Data
 @AllArgsConstructor

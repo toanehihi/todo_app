@@ -1,7 +1,6 @@
-package com.example.todo_app.Entity;
+package com.example.todo_app.entity;
 
-import com.example.todo_app.Common.Role;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.todo_app.common.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

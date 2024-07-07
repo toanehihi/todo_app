@@ -1,4 +1,4 @@
-package com.example.todo_app.Common;
+package com.example.todo_app.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
