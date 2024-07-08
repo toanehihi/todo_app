@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Priority {
-    IN_DAY("In a day"),
-    IN_THREE_DAYS("In three days"),
-    IN_WEEK("In week"),
-    IN_TWO_WEEKS("In two week"),
-    IN_MONTH("In month");
-    private String priority;
+    In_day("In a day"),
+    In_three_days("In three days"),
+    In_week("In week"),
+    In_two_week("In two week"),
+    In_month("In month");
+    private final String priority;
 }
