@@ -1,4 +1,4 @@
-package com.example.todo_app.service.registration;
+package com.example.todo_app.email;
 
 import org.springframework.stereotype.Service;
 

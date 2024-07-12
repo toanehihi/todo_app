@@ -14,8 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="user")
@@ -26,16 +24,26 @@ public class User implements UserDetails {
 
     private String firstname;
 
+    private String lastname;
+
     private String email;
 
     private String password;
 
-    private boolean locked;
-
-    private boolean enabled;
-
     @Enumerated(EnumType.STRING)
     private Role role;
+
+//    private boolean locked;
+//
+//    private boolean enabled;
+
+    public User(String firstname, String lastname, String email, String password, Role role) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 //    @JsonIgnore
@@ -60,7 +68,7 @@ public class User implements UserDetails {
     }
     @Override
     public boolean isAccountNonLocked() {
-        return !locked;
+        return true;
     }
     @Override
     public boolean isCredentialsNonExpired() {
@@ -68,6 +76,6 @@ public class User implements UserDetails {
     }
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return true;
     }
 }
