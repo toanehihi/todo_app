@@ -30,7 +30,7 @@ public class UserController {
     public ResponseEntity<List<Task>> findAllTasks(){
         return ResponseEntity.ok(taskService.getAllTasks());
     }
-    @GetMapping("task/{id}")
+    @GetMapping("/task/{id}")
     public Integer findTaskById(@PathVariable("id") Integer id){
         Task tmpTask = taskService.getTaskById(id);
         return tmpTask.getPriority().ordinal();

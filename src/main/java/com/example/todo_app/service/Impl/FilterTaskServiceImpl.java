@@ -18,7 +18,9 @@ public class FilterTaskServiceImpl implements FilterTaskService {
     public FilterTaskServiceImpl(TaskRepository taskRepository){
         this.taskRepository=taskRepository;
     }
+
     @Override
+    //check status task
     public Map<Status,Integer> checkStatusTasks(){
         Map<Status, Integer> tmpMap = new HashMap<>();
         tmpMap.put(Status.In_Progress,taskRepository.countTaskByStatus(Status.In_Progress));
@@ -30,12 +32,15 @@ public class FilterTaskServiceImpl implements FilterTaskService {
 
     @Override
     public List<Task> filterTasks(String status,String priority){
+        //put all task to List
         List<Task> tasks = taskRepository.findAll();
+        //transfer List into Stream
         Stream<Task> filterResult = tasks.stream();
-
+        //filter by Status, if != Default -> check them which task.Status == status, keep it, then remove the rest from the stream
         if(!status.equals("Default")){
             filterResult = filterResult.filter(tmp->tmp.getStatus().equals(Status.valueOf(status)));
         }
+        //filter by Priority, if exist -> keep all task has task.Priority == priority and remove the rest from the stream
         if(!priority.equals("Default")){
             filterResult = filterResult.filter(tmp->tmp.getPriority().equals(Priority.valueOf(priority)));
         }

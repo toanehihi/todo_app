@@ -14,7 +14,7 @@ public class SortingServiceImpl implements SortingService {
     public SortingServiceImpl(TaskRepository taskRepository){
         this.taskRepository=taskRepository;
     }
-
+    //sort task
     @Override
     public List<Task> sortListTasksViaPriority(){
         List<Task> tasks = taskRepository.findAll();

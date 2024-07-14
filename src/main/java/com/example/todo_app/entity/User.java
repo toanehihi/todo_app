@@ -14,8 +14,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
+
 @Table(name="user")
 public class User implements UserDetails {
     @Id
@@ -25,7 +28,7 @@ public class User implements UserDetails {
     private String firstname;
 
     private String lastname;
-
+    @Column(unique = true)
     private String email;
 
     private String password;
@@ -33,8 +36,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+//    @Column(columnDefinition = "integer default 0")
 //    private boolean locked;
 //
+//    @Column(columnDefinition = "integer default 1")
 //    private boolean enabled;
 
     public User(String firstname, String lastname, String email, String password, Role role) {
