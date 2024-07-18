@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 @RestController
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
 public class SortingController {
-    private SortingService sortingService;
+    private final SortingService sortingService;
 
     @Autowired
     public SortingController(SortingService sortingService){
@@ -21,6 +21,7 @@ public class SortingController {
     }
 
     @GetMapping("/sorting")
+    @CrossOrigin(origins = "*")
     public List<Task> sortingTasksViaPriority(){
         return sortingService.sortListTasksViaPriority();
     }

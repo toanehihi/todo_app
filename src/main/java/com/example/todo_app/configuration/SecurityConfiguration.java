@@ -27,9 +27,10 @@ public class SecurityConfiguration {
                 //configure authentication and authorization of HTTP requests.
                 .authorizeHttpRequests(req->
                         req.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/auth/me").hasAuthority("USER")
+                              .requestMatchers("/api/auth").hasAuthority("USER")
                                 .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                                .anyRequest().authenticated())
+                                .anyRequest().authenticated()
+                )
                 .sessionManagement(sess-> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //sessions do not store state
                 .authenticationProvider(authenticationProvider) //provide an authenticationProvider to authenticate the user.
                 .addFilterBefore(jawAuthFilter, UsernamePasswordAuthenticationFilter.class);

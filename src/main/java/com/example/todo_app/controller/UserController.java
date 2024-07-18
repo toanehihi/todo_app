@@ -13,32 +13,50 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     TaskService taskService;
     @Autowired
     public UserController(TaskService taskService){
         this.taskService=taskService;
     }
-    @GetMapping("/information")
+
+    @GetMapping("/info")
+    @CrossOrigin(origins = "*")
     public Authentication user(){
-        Authentication auth = SecurityContextHolder
+//        Authentication auth = SecurityContextHolder
+//                .getContext()
+//                .getAuthentication();
+//        return auth;
+        return SecurityContextHolder
                 .getContext()
                 .getAuthentication();
-        return auth;
     }
     @GetMapping("/task")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<Task>> findAllTasks(){
         return ResponseEntity.ok(taskService.getAllTasks());
     }
     @GetMapping("/task/{id}")
+    @CrossOrigin(origins = "*")
     public Integer findTaskById(@PathVariable("id") Integer id){
         Task tmpTask = taskService.getTaskById(id);
         return tmpTask.getPriority().ordinal();
     }
 
-    @PostMapping("/task")
+    @PostMapping("/add-task")
+    @CrossOrigin(origins = "*")
     public void addTask(@RequestBody Task task){
         taskService.addTask(task);
     }
+    @PutMapping("/edit-task/{id}")
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> editTask(@RequestBody Task task, @PathVariable Integer id) {
+        return ResponseEntity.ok(taskService.editTask(task,id));
+    }
 
+    @DeleteMapping("/delete-task/{id}")
+    public ResponseEntity<Task> deleteTask(@PathVariable Integer id) {
+        return ResponseEntity.ok(taskService.deleteTask(id));
+    }
 }

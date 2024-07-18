@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
 public class FilterController {
     FilterTaskService filterTaskService;
@@ -21,11 +21,13 @@ public class FilterController {
         this.filterTaskService=filterTaskService;
     }
     @GetMapping("/filterAmount")
+    @CrossOrigin(origins = "*")
     public Map<Status,Integer> filterAmountTask(){
         Map<Status,Integer> statusIntegerMap = filterTaskService.checkStatusTasks();
         return statusIntegerMap;
     }
     @GetMapping("/filterViaStatusAndPriority")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<Task>> filterViaStatusAndPriority(@RequestParam("status") String status, @RequestParam("priority") String priority){
         List<Task> tasks = filterTaskService.filterTasks(status,priority);
         return ResponseEntity.status(HttpStatus.OK).body(tasks);

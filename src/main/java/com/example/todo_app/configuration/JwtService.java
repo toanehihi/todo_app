@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,16 @@ import java.util.HashMap;
 @Service
 public class JwtService {
     //secret key is used to authenticate the integrity of the signature, generate a unique signature that no one can forge without it
-    private static final String SECRET_KEY = "sDb4E6sciye6yPSfaICxiqUWi7BZGF+eH117yKP+Lry75qyIKOuWUR898tlb1IcnJayB/2hLiUDVFSJOOe5POA==";
+    @Value("${application.security.jwt.secret-key}")
+    private String secretKey;
+    @Value("${application.security.jwt.expiration}")
+    private long jwtExpiration;
+    @Value("${application.security.jwt.refresh-token.expiration}")
+    private long refreshExpiration;
     //
     private Key getSigninKey(){
         //decode
-        byte[] keyBites = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBites = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBites);
     }
     //extract all claims
@@ -40,18 +46,28 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }//get username from token
 
-    public String generateToken(Map<String,Object> extraClaims, UserDetails userDetails){
-        return Jwts.builder() //start generate process
-                .setClaims(extraClaims) //set claims provide to Jwt as Map<String,Object>
-                .setSubject(userDetails.getUsername())//subject of Jwt = user username
-                .setIssuedAt(new Date(System.currentTimeMillis())) //set release date for Jwt at current time
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*30)) //expired in 30 minutes
-                .signWith(getSigninKey(), SignatureAlgorithm.HS256) //signing the Jwt by using HS256 encryption algorithm and using the signing key
-                .compact();//complete
-    }
     public String generateToken(UserDetails userDetails){
+
         return generateToken(new HashMap<>(),userDetails);
     } //generate a token for an user
+    public String generateToken(Map<String,Object> extraClaims, UserDetails userDetails){
+        return buildToken(extraClaims,userDetails,jwtExpiration);
+    }
+    public String generateRefreshToken(UserDetails userDetails){
+        return buildToken(new HashMap<>(),userDetails,refreshExpiration);
+    }
+
+
+    public String buildToken(Map<String,Object> extraClaims,UserDetails userDetails,long expiration){
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+expiration))
+                .signWith(getSigninKey(),SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 
 
     public boolean isTokenValid(String token, UserDetails userDetails){
