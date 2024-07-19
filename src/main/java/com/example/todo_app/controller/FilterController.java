@@ -12,7 +12,7 @@ import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api")
+@RequestMapping("/api/v1/user/task")
 public class FilterController {
     FilterTaskService filterTaskService;
 

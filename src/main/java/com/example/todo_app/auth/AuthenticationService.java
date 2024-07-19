@@ -6,6 +6,7 @@ import com.example.todo_app.entity.User;
 import com.example.todo_app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,10 @@ public class AuthenticationService {
         this.passwordEncoder=passwordEncoder;
     }
     public AuthenticationResponse register(RegisterRequest request){
+        userRepository.findUserByEmail(request.getEmail()).ifPresent(user -> {
+            throw new RuntimeException("User with email "+request.getEmail() + "already exists");
+        });
+
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -38,18 +43,37 @@ public class AuthenticationService {
         return AuthenticationResponse.builder().token(jwtToken).user(user).build();
     }
 
+//    public AuthenticationResponse authenticate(AuthenticationRequest request){
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        request.getEmail(),
+//                        request.getPassword()
+//                )
+//        );
+//        var user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
+//        var jwtToken = jwtService.generateToken(user);
+//        return AuthenticationResponse.builder()
+//                .token(jwtToken)
+//                .user(user)
+//                .build();
+//    }
     public AuthenticationResponse authenticate(AuthenticationRequest request){
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+        }
+        catch(Exception e){
+                throw new AuthenticationCredentialsNotFoundException("Invalid email or password");
+            }
         var user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .user(user)
                 .build();
+
+
+
     }
 }
