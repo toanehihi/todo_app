@@ -5,6 +5,8 @@ import com.example.todo_app.configuration.JwtService;
 import com.example.todo_app.entity.User;
 import com.example.todo_app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,19 +14,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static java.rmi.server.LogStream.log;
+
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    @Autowired
-    public AuthenticationService(UserRepository userRepository,PasswordEncoder passwordEncoder,JwtService jwtService,AuthenticationManager authenticationManager){
-        this.userRepository=userRepository;
-        this.authenticationManager=authenticationManager;
-        this.jwtService=jwtService;
-        this.passwordEncoder=passwordEncoder;
-    }
+
     public AuthenticationResponse register(RegisterRequest request){
         userRepository.findUserByEmail(request.getEmail()).ifPresent(user -> {
             throw new RuntimeException("User with email "+request.getEmail() + "already exists");
@@ -59,21 +59,23 @@ public class AuthenticationService {
 //    }
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         try {
+            log.info("dasdasasdasd");
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
         }
         catch(Exception e){
+//            e.printStackTrace();
+
                 throw new AuthenticationCredentialsNotFoundException("Invalid email or password");
             }
-        var user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
+        User user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        System.out.println("Token is generate......");
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .user(user)
                 .build();
-
-
 
     }
 }

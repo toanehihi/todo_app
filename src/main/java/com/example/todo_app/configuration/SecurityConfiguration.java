@@ -37,8 +37,9 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable) //disable CSRF protection(protection against CSRF attack)
                 //configure authentication and authorization of HTTP requests.
                 .authorizeHttpRequests(req->
-                        req.requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
+                        req.requestMatchers("/api/**").permitAll()
+//                        req.requestMatchers("/api/v1/auth/**").permitAll()
+//                                .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(sess-> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //sessions do not store state
                 .authenticationProvider(authenticationProvider) //provide an authenticationProvider to authenticate the user.

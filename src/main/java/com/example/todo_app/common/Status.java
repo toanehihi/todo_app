@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Status {
-    In_Progress("In_Progress"),
-    Completed("Completed"),
-    Overdue("Overdue"),
-    Cancelled("Cancelled");
+    IN_PROGRESS("In progress"),
+    COMPLETED("Completed"),
+    CANCELLED("Cancelled"),
+    OVERDUE("Overdue");
     private final String status;
 }

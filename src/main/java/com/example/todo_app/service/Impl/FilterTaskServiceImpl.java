@@ -23,10 +23,10 @@ public class FilterTaskServiceImpl implements FilterTaskService {
     //check status task
     public Map<Status,Integer> checkStatusTasks(){
         Map<Status, Integer> tmpMap = new HashMap<>();
-        tmpMap.put(Status.In_Progress,taskRepository.countTaskByStatus(Status.In_Progress));
-        tmpMap.put(Status.Completed,taskRepository.countTaskByStatus(Status.Completed));
-        tmpMap.put(Status.Cancelled,taskRepository.countTaskByStatus(Status.Cancelled));
-        tmpMap.put(Status.Overdue,taskRepository.countTaskByStatus(Status.Overdue));
+        tmpMap.put(Status.IN_PROGRESS,taskRepository.countTaskByStatus(Status.IN_PROGRESS));
+        tmpMap.put(Status.COMPLETED,taskRepository.countTaskByStatus(Status.COMPLETED));
+        tmpMap.put(Status.CANCELLED,taskRepository.countTaskByStatus(Status.CANCELLED));
+        tmpMap.put(Status.OVERDUE,taskRepository.countTaskByStatus(Status.OVERDUE));
         return tmpMap;
     }
 

@@ -34,16 +34,16 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void addTask(Task task){
-        //get information current user
-        User userDetails = (User) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        //find user if exist
-        User user = userRepository.findUserByEmail(userDetails.getEmail())
-                .orElseThrow(()->new RuntimeException("User not found!"));
-        //assign user to this task
-        task.setUser(user);
+//        //get information current user
+//        User userDetails = (User) SecurityContextHolder
+//                .getContext()
+//                .getAuthentication()
+//                .getPrincipal();
+//        //find user if exist
+//        User user = userRepository.findUserByEmail(userDetails.getEmail())
+//                .orElseThrow(()->new RuntimeException("User not found!"));
+//        //assign user to this task
+//        task.setUser(user);
         //save to db
         taskRepository.save(task);
     }

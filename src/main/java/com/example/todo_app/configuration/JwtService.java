@@ -25,7 +25,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBites);
     }
     //extract all claims
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder() //build jwt parser
                 .setSigningKey(getSigninKey()).build()//set signingkey
                 .parseClaimsJws(token) //extract token to Jwt<Claims>
