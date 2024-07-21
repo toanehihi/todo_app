@@ -100,12 +100,12 @@ const TaskContextProvider = ({ children }) => {
 				const { id } = action.payload;
 				const removeTask = async (id) => {
 					const res = await axios.delete(
-						`http://localhost:8080/api/v1/user/detete-task/${id}`,
+						`http://localhost:8080/api/v1/user/delete-task/${id}`,
 					);
 					return res;
 				};
 
-				removeTask(id)
+					removeTask(id)
 					.then((res) => {
 						const dataHaveBeenDeleted = res.data;
 						const data = state.tasks.filter(
@@ -115,7 +115,11 @@ const TaskContextProvider = ({ children }) => {
 						dispatch({ type: actions.GET_TASKS_FROM_DATABASE, payload: data });
 					})
 					.then(openNotification("Sucess", "Delete Task Sucessfully"))
-					.catch((e) => openNotification("Fail", "Delete Task Unsucessfully"));
+
+					.catch((e)=>openNotification("Fail", "Delete Task Unsucessfully"));
+				
+				
+					
 				return {
 					state,
 					tasks: state.tasks.filter((task) => task.id !== id),
