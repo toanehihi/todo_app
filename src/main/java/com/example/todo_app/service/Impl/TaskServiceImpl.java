@@ -5,22 +5,31 @@ import com.example.todo_app.entity.User;
 import com.example.todo_app.repository.TaskRepository;
 import com.example.todo_app.repository.UserRepository;
 import com.example.todo_app.service.TaskService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.View;
 
 import java.util.List;
-@Service
-public class TaskServiceImpl implements TaskService {
-    private TaskRepository taskRepository;
-    private UserRepository userRepository;
 
-    @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository,UserRepository userRepository){
-        this.taskRepository=taskRepository;
-        this.userRepository=userRepository;
-    }
+import static java.rmi.server.LogStream.log;
+
+@Service
+@RequiredArgsConstructor
+public class TaskServiceImpl implements TaskService {
+    private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
+    private final View error;
+    private final UserDetailsService userDetailsService;
+
+
     @Override
     public List<Task> getAllTasks(){
         return taskRepository.findAll();
@@ -33,20 +42,35 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public void addTask(Task task){
-//        //get information current user
-//        User userDetails = (User) SecurityContextHolder
-//                .getContext()
-//                .getAuthentication()
-//                .getPrincipal();
-//        //find user if exist
-//        User user = userRepository.findUserByEmail(userDetails.getEmail())
-//                .orElseThrow(()->new RuntimeException("User not found!"));
-//        //assign user to this task
-//        task.setUser(user);
-        //save to db
+    public void addTask(Task task) {
+        // Lấy Authentication từ SecurityContextHolder
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Kiểm tra nếu Authentication là null hoặc chưa được xác thực
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new SecurityException("User is not authenticated!");
+        }
+
+        // Lấy principal từ Authentication
+        Object principal = authentication.getPrincipal();
+
+        // Kiểm tra và ép kiểu principal về UserDetails
+        UserDetails userDetails;
+        if (principal instanceof UserDetails) {
+            userDetails = (UserDetails) principal;
+        } else {
+            throw new SecurityException("Authentication principal is not an instance of UserDetails!");
+        }
+
+        // Lấy User từ UserRepository
+        User user = userRepository.findUserByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException("User not found!"));
+
+        // Gán User cho Task và lưu Task vào repository
+        task.setUser(user);
         taskRepository.save(task);
     }
+
     @Override
     @Transactional
     public Task deleteTask(Integer id){

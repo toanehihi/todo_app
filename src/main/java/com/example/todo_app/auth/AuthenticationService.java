@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +62,6 @@ public class AuthenticationService {
 //    }
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         try {
-            log.info("dasdasasdasd");
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
@@ -71,7 +73,10 @@ public class AuthenticationService {
             }
         User user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
-        System.out.println("Token is generate......");
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .user(user)
