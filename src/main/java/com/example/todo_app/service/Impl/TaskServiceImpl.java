@@ -43,18 +43,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void addTask(Task task) {
-        // Lấy Authentication từ SecurityContextHolder
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Kiểm tra nếu Authentication là null hoặc chưa được xác thực
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new SecurityException("User is not authenticated!");
         }
 
-        // Lấy principal từ Authentication
         Object principal = authentication.getPrincipal();
 
-        // Kiểm tra và ép kiểu principal về UserDetails
         UserDetails userDetails;
         if (principal instanceof UserDetails) {
             userDetails = (UserDetails) principal;
@@ -62,11 +58,9 @@ public class TaskServiceImpl implements TaskService {
             throw new SecurityException("Authentication principal is not an instance of UserDetails!");
         }
 
-        // Lấy User từ UserRepository
         User user = userRepository.findUserByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("User not found!"));
 
-        // Gán User cho Task và lưu Task vào repository
         task.setUser(user);
         taskRepository.save(task);
     }
