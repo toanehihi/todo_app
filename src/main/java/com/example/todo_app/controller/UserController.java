@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -26,16 +27,22 @@ public class UserController {
 
 
     private final JwtService jwtService;
-//    @GetMapping("/information")
-//    public Authentication user(){
-//        Authentication auth = SecurityContextHolder
-//                .getContext()
-//                .getAuthentication();
-//        return auth;
-//    }
+
+    //test
+    @GetMapping("/information")
+    public ResponseEntity getUserInformation() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new SecurityException("User is not authenticated!");
+        }
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        return ResponseEntity.ok(userDetails);
+
+    }
     @GetMapping("/task")
     public ResponseEntity<List<Task>> findAllTasks(){
-        return ResponseEntity.ok(taskService.getAllTasks());
+
+        return ResponseEntity.ok(taskService.getTasksByUser());
     }
     @GetMapping("/task/{id}")
     public Integer findTaskById(@PathVariable("id") Integer id){

@@ -20,10 +20,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 
 
-    @GetMapping("/me")
-    public String me(){
-        return "Hello World!";
-    }
+
 
     @PostMapping("/register")
 
