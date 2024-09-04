@@ -31,41 +31,38 @@ public class SecurityConfiguration {
         corsConfiguration.addAllowedHeader("*");
         return corsConfiguration;
     }
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-//        http
-//                .cors(cors->cors.configurationSource(request -> corsConfiguration()))
-//                .csrf(AbstractHttpConfigurer::disable) //disable CSRF protection(protection against CSRF attack)
-//                //configure authentication and authorization of HTTP requests.
-//                .authorizeHttpRequests(req->
-//                        req.requestMatchers("/api/**").permitAll()
-////                        req.requestMatchers("/api/v1/auth/**").permitAll()
-////                                .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
-//                                .anyRequest().authenticated())
-//                .sessionManagement(sess-> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //sessions do not store state
-//                .oauth2Login(oauth2->{
-//
-//                })
-//                .authenticationProvider(authenticationProvider); //provide an authenticationProvider to authenticate the user.
-////                .addFilterBefore(jawAuthFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//
-//
-//        return http.build();
-//    }
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-    http
-            .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/").permitAll();
-                auth.anyRequest().authenticated();
-            })
-            .oauth2Login(oauth2 ->{});
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        http
+                .cors(cors->cors.configurationSource(request -> corsConfiguration()))
+                .csrf(AbstractHttpConfigurer::disable) //disable CSRF protection(protection against CSRF attack)
+
+                .authorizeHttpRequests(req->
+                        req.requestMatchers("/api/**").permitAll()
+//                        req.requestMatchers("/api/v1/auth/**").permitAll()
+//                                .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
+                                .anyRequest().authenticated())
+                .sessionManagement(sess-> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //sessions do not store state
+                .authenticationProvider(authenticationProvider) //provide an authenticationProvider to authenticate the user.
+                .addFilterBefore(jawAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 
 
-    return http.build();
-}
+        return http.build();
+    }
+//@Bean
+//public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+//    http
+//            .authorizeHttpRequests(auth -> {
+//                auth.requestMatchers("/").permitAll();
+//                auth.anyRequest().authenticated();
+//            })
+//            .oauth2Login(oauth2 ->{});
+//
+//
+//
+//    return http.build();
+//}
 
 
 
