@@ -2,6 +2,7 @@ package com.example.todo_app.entity;
 
 import com.example.todo_app.common.Priority;
 import com.example.todo_app.common.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +34,6 @@ public class Task {
     private String note;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.LAZY)
-//    @JsonIgnore
+   @JsonIgnore
     private User user;
 }
